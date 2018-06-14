@@ -18,6 +18,7 @@ public class TimeServer {
                 port = Integer.valueOf(args[0]);
             } catch (NumberFormatException e) {
                 // TODO 请自行扩展.
+                e.printStackTrace();
             }
         }
 
