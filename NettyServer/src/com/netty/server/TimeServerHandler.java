@@ -4,13 +4,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPromise;
 
-import java.net.SocketAddress;
 import java.util.Date;
 
 public class TimeServerHandler extends ChannelHandlerAdapter {
-
+    String TAG_LINE = "line.separator";
     private int counter;
 
     @Override
@@ -19,15 +17,15 @@ public class TimeServerHandler extends ChannelHandlerAdapter {
         byte[] req = new byte[buf.readableBytes()];
         buf.readBytes(req);
 
+        // String body = new String(req, "UTF-8");
+        //System.out.println("The time server receive order : " + body);
         String body = new String(req, "UTF-8")
-                .substring(0, req.length - System.getProperty("line.separator").length());
-        System.out.println("The time server receive order : " + body + " ; the counter is :" + ++counter);
-        // System.out.println("The time server receive order : " + body);
-        String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body) ?
-                new Date(System.currentTimeMillis()).toString() : "BAD ORDER";
-        currentTime = currentTime + System.getProperty("line.separator");
+                .substring(0, req.length - System.getProperty(TAG_LINE).length());
+        System.out.println("The time server receive order : " + body + " ; the conter is :" + ++counter);
+
+        String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body) ? new Date(System.currentTimeMillis()).toString() : "BAD ORDER";
         ByteBuf resp = Unpooled.copiedBuffer(currentTime.getBytes());
-        ctx.writeAndFlush(resp);
+        ctx.write(resp);
     }
 
     @Override
@@ -38,15 +36,5 @@ public class TimeServerHandler extends ChannelHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         ctx.close();
-    }
-
-    @Override
-    public void connect(ChannelHandlerContext ctx, SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise promise) throws Exception {
-        super.connect(ctx, remoteAddress, localAddress, promise);
-    }
-
-    @Override
-    public void disconnect(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
-        super.disconnect(ctx, promise);
     }
 }
