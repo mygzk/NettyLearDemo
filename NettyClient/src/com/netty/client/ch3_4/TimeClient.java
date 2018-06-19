@@ -1,4 +1,4 @@
-package com.netty.client;
+package com.netty.client.ch3_4;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -14,7 +14,7 @@ import io.netty.handler.codec.string.StringDecoder;
 public class TimeClient {
 
 
-    public void connect(int port, String host) {
+    public void connect(int port, String host) throws Exception {
         EventLoopGroup group = new NioEventLoopGroup();
 
         Bootstrap b = new Bootstrap();
@@ -30,17 +30,20 @@ public class TimeClient {
                 });
 
 
+
+
+
         try {
             ChannelFuture f = b.connect(host, port).sync(); // 发起异步连接操作
             f.channel().closeFuture().sync();// 等待客户端链路关闭。
         } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+           // e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } finally {
             group.shutdownGracefully();
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         int port = 8080;
         if (args != null && args.length > 0) {
             try {
