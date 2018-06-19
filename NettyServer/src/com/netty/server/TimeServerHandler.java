@@ -15,19 +15,20 @@ public class TimeServerHandler extends ChannelHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         String body = (String) msg;
         System.out.println("The time server receive order : " + body +
-                " ; the conter is :" + ++counter);
+                " ; the counter is :" + ++counter);
 
         String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body) ?
                 new Date(System.currentTimeMillis()).toString() : "BAD ORDER";
+        currentTime = currentTime + System.getProperty(TAG_LINE);
         ByteBuf resp = Unpooled.copiedBuffer(currentTime.getBytes());
         ctx.writeAndFlush(resp);
     }
 
-   /* @Override
+    @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
         ctx.flush();
     }
-*/
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         ctx.close();
