@@ -11,23 +11,20 @@ public class TimeClientHandler extends ChannelHandlerAdapter {
 
     private static final Logger LOGGER = Logger.getLogger(TimeClientHandler.class.getName());
 
-    private final ByteBuf firstMessage;
     private final byte[] req;
 
     String TAG_LINE = "line.separator";
     private int counter;
 
     public TimeClientHandler() {
-      req = ("QUERY TIME ORDER" + System.getProperty(TAG_LINE)).getBytes();
-        firstMessage = Unpooled.buffer(req.length);
-        firstMessage.writeBytes(req);
+        req = ("QUERY TIME ORDER" + System.getProperty(TAG_LINE)).getBytes();
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-       // ctx.writeAndFlush(firstMessage);
+        // ctx.writeAndFlush(firstMessage);
         ByteBuf message = null;
-        for (int i=0;i<100;i++){
+        for (int i = 0; i < 100; i++) {
             message = Unpooled.buffer(req.length);
             message.writeBytes(req);
             ctx.writeAndFlush(message);
@@ -38,12 +35,8 @@ public class TimeClientHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf = (ByteBuf) msg;
-        byte[] req = new byte[buf.readableBytes()];
-        buf.readBytes(req);
-
-        String body = new String(req, "UTF-8");
-        System.out.println("Now is : " + body+" ; the counter is :"+ ++counter);
+        String body = (String) msg;
+        System.out.println("Now is : " + body + " ; the counter is :" + ++counter);
     }
 
     @Override
